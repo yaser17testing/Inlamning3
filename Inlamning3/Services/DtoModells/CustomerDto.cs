@@ -36,7 +36,7 @@ public class CustomerDto
 
     public string RoleName { get; set; } = null!;
 
-    public int OrderID { get; set; }
+    public string OrderDetails { get; set; } = null!;
 
 
 

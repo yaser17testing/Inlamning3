@@ -179,7 +179,7 @@ internal class CategoryAndProductService(CategoryRepository categoryRepository, 
 
 
 
-    public ProductEntity UpdateProduct(ProductDto product)
+    public ProductEntity UpdateProduct(ProductEntity product)
     {
 
 
@@ -189,33 +189,11 @@ internal class CategoryAndProductService(CategoryRepository categoryRepository, 
         {
 
 
-            var existingProduct = _productRepository.GetOne(x => x.ArtikelID == product.ArtikelID);
+           
 
 
 
-            if (existingProduct != null)
-            {
-
-
-                var categoryEntity = _categoryRepository.GetOne(x => x.CategoryName == product.CategoryName);
-                categoryEntity ??= _categoryRepository.Update(new CategoryEntity { CategoryName = product.CategoryName });
-
-
-
-
-
-
-
-
-
-                existingProduct.Title = product.Title;
-
-                existingProduct.Description = product.Description;
-
-                existingProduct.Price = product.Price;
-
-
-                    existingProduct.CategoryId = categoryEntity.Id;
+           
 
 
                
@@ -223,7 +201,12 @@ internal class CategoryAndProductService(CategoryRepository categoryRepository, 
 
 
 
-                var updatedEntity = _productRepository.Update(existingProduct);
+
+
+
+
+
+                var updatedEntity = _productRepository.Update(x => x.ArtikelID == product.ArtikelID,product);
 
                 if (updatedEntity != null)
                 {
@@ -231,7 +214,7 @@ internal class CategoryAndProductService(CategoryRepository categoryRepository, 
                 }
 
 
-            }
+            
         }
         catch (Exception ex) { Debug.WriteLine("ERROR  :: " + ex.Message); }
         return null!;
@@ -241,45 +224,35 @@ internal class CategoryAndProductService(CategoryRepository categoryRepository, 
 
 
 
-    public CategoryEntity UpdateCategory(int id, string name)
+    public CategoryEntity UpdateCategory(CategoryEntity categoryEntity)
     {
 
 
-        var categoryToUpdate = _categoryRepository.GetOne(x => x.Id == id);
 
-        if (categoryToUpdate != null)
+
+
+
+        var updatedCategory = _categoryRepository.Update(x => x.Id == categoryEntity.Id, categoryEntity);
+
+        if (updatedCategory != null)
         {
 
-            categoryToUpdate.CategoryName = name;
+            Console.WriteLine("Suceed");
 
-
-            var updatedCategory = _categoryRepository.Update(categoryToUpdate);
-
-            if (updatedCategory != null)
-            {
-
-                Console.WriteLine("Suceed");
-
-                return updatedCategory;
-            }
-            else
-            {
-
-
-                Console.WriteLine("Failed To Update");
-
-            }
+            return updatedCategory;
         }
+
+
         else
         {
 
             Console.WriteLine("No Category with that Id");
 
-
+            return null!;
         }
 
-        return null!; 
     }
+    
 
 
 

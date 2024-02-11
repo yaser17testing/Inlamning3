@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Inlamning3.Services;
 
-internal class Cu_Ad_Ro_Or_Service(CustomerRepository customerRepository, AdressRepository adressRepository, OrderRepository orderRepository, RoleRepository roleRepository)
+internal class Cu_Ad_Ro_Or_Service(CustomerRepository customerRepository, AdressRepository adressRepository, OrderRepository orderRepository, RoleRepository roleRepository,OrderService orderService)
 {
 
     private readonly CustomerRepository _customerRepository = customerRepository;
@@ -22,7 +22,7 @@ internal class Cu_Ad_Ro_Or_Service(CustomerRepository customerRepository, Adress
 
     private readonly RoleRepository _roleRepository = roleRepository;
 
-
+    private readonly OrderService _orderService = orderService;
 
 
 
@@ -33,14 +33,14 @@ internal class Cu_Ad_Ro_Or_Service(CustomerRepository customerRepository, Adress
         try
         {
 
-
+           
 
 
             var roles = _roleRepository.GetOne(x => x.RoleName == user.RoleName);
             roles ??= _roleRepository.Create(new RoleEntity { RoleName = user.RoleName });
 
             var adresses = _adressRepository.GetOne(x => x.StreetName == user.StreetName && x.City == user.City && x.PostalCode == user.PostalCode);
-            adresses??=_adressRepository.Create(new AdressEntity { StreetName = user.StreetName , City = user.City ,PostalCode = user.PostalCode });
+            adresses ??= _adressRepository.Create(new AdressEntity { StreetName = user.StreetName, City = user.City, PostalCode = user.PostalCode });
 
 
 
@@ -61,6 +61,7 @@ internal class Cu_Ad_Ro_Or_Service(CustomerRepository customerRepository, Adress
 
                 AddressId = adresses.Id,
 
+                
 
 
             };
@@ -68,10 +69,21 @@ internal class Cu_Ad_Ro_Or_Service(CustomerRepository customerRepository, Adress
             var result = _customerRepository.Create(customerEntity);
             if (result != null)
 
+            {
+
+                var newOrder = new OrderEntity
+                {
+                    CustomerID = result.Id,
+                    OrderDetails = "in progress1",
+                };
+
+                // Sparar den nya ordern till databasen
+                _orderRepository.Create(newOrder);
+
 
 
                 return true;
-
+            }
         }
         catch (Exception ex) { Debug.WriteLine("ERROR :: " + ex.Message); }
 
@@ -81,28 +93,24 @@ internal class Cu_Ad_Ro_Or_Service(CustomerRepository customerRepository, Adress
     }
 
 
-    public CustomerEntity GetCustomerID(CustomerDto product)
+    public CustomerEntity GetCustomerID(int product)
     {
 
 
         try
         {
 
-            var existing = _customerRepository.GetOne(x => x.Id == product.Id);
+            var existing = _customerRepository.GetOne(x => x.Id == product);
 
             if (existing != null)
             {
 
-                Debug.WriteLine($"Product found with Titel: {product.Id} - {product.FirstName} - {product.LastName} - {product.Email} - {product.OrderID} - {product.OrderID} ");
+                
 
                 return existing;
             }
 
 
-            else
-            {
-                Debug.WriteLine($"No Product found with Titel: {product.Id}");
-            }
 
         }
 
@@ -191,7 +199,7 @@ internal class Cu_Ad_Ro_Or_Service(CustomerRepository customerRepository, Adress
 
 
 
-    public CustomerEntity UpdateCustomer(CustomerDto user)
+    public CustomerEntity UpdateCustomer(CustomerEntity customerEntity)
     {
 
 
@@ -201,15 +209,7 @@ internal class Cu_Ad_Ro_Or_Service(CustomerRepository customerRepository, Adress
         {
 
 
-            var existingCustomer = _customerRepository.GetOne(x => x.Id == user.Id);
-
-
-
-            if (existingCustomer != null)
-            {
-
-
-             
+            //var existingCustomer = _customerRepository.GetOne(x => x.Id == user.Id);
 
 
 
@@ -219,22 +219,8 @@ internal class Cu_Ad_Ro_Or_Service(CustomerRepository customerRepository, Adress
 
 
 
-                existingCustomer.FirstName = user.FirstName;
 
-                existingCustomer.LastName = user.LastName;
-
-                existingCustomer.Email = user.Email;
-
-
-             
-
-
-
-
-
-
-
-                var updatedCustomer = _customerRepository.Update(existingCustomer);
+            var updatedCustomer = _customerRepository.Update(x => x.Id == customerEntity.Id,customerEntity);
 
                 if (updatedCustomer != null)
                 {
@@ -242,7 +228,7 @@ internal class Cu_Ad_Ro_Or_Service(CustomerRepository customerRepository, Adress
                 }
 
 
-            }
+            
         }
         catch (Exception ex) { Debug.WriteLine("ERROR  :: " + ex.Message); }
         return null!;

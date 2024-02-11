@@ -29,7 +29,7 @@ internal class OrderService
 
 
 
-    public OrderEntity CreateRole(string orderName)
+    public OrderEntity CreateOrder(string orderName)
     {
 
         var orderEntity = _orderRepository.GetOne(x => x.OrderDetails == orderName);
@@ -97,7 +97,7 @@ internal class OrderService
 
 
 
-    public IEnumerable<OrderEntity> GetAllRoles()
+    public IEnumerable<OrderEntity> GetAllOrder()
     {
 
         var allOrders = _orderRepository.GetAll();
@@ -112,36 +112,21 @@ internal class OrderService
 
 
 
-    public OrderEntity updateOrder(OrderEntity OrderName)
+    public OrderEntity updateOrder(OrderEntity orderEntity)
     {
 
         try
         {
 
 
-            var existingOrder = _orderRepository.GetOne(x => x.OrderID == OrderName.OrderID);
-
-
-
-            if (existingOrder != null)
-            {
-
-
-
-
-                existingOrder.OrderID = OrderName.OrderID;
+          
 
 
 
 
 
 
-
-
-
-
-
-                var updatedOrder = _orderRepository.Update(existingOrder);
+                var updatedOrder = _orderRepository.Update(x => x.OrderID == orderEntity.OrderID,orderEntity );
 
                 if (updatedOrder != null)
                 {
@@ -149,7 +134,7 @@ internal class OrderService
                 }
 
 
-            }
+            
         }
         catch (Exception ex) { Debug.WriteLine("ERROR  :: " + ex.Message); }
         return null!;

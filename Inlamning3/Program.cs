@@ -30,14 +30,27 @@ public class Program
                 services.AddScoped<CategoryAndProductService>();
                 services.AddScoped<OrderService>();
                 services.AddScoped<RoleService>();
-                
 
+                services.AddSingleton<Consol>();
 
 
 
 
 
             }).Build();
+
+
+
+        builder.Start();
+
+        Console.Clear();
+
+        var productService = builder.Services.GetRequiredService<Consol>();
+
+        productService.CreateCustomer();
+
+
+
     }
 
 }

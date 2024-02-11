@@ -90,12 +90,12 @@ internal class AdressService
     }
 
 
-    public AdressEntity GetAdressById(int id)
+    public AdressEntity GetAdressById(int adress)
     {
 
-        var adressGet = _adressRepository.GetOne(x => x.Id == id);
+        var adressGet = _adressRepository.GetOne(x => x.Id == adress);
 
-        if (adressGet != null)
+        if (adressGet !=null)
         {
 
             return adressGet;
@@ -132,28 +132,14 @@ internal class AdressService
 
 
 
-    public AdressEntity updateAdress(AdressEntity adress)
+    public AdressEntity updateAdress(AdressEntity adressEntity)
     {
 
         try
         {
 
 
-            var existingAdress = _adressRepository.GetOne(x => x.Id == adress.Id);
-
-
-
-            if (existingAdress != null)
-            {
-
-
-
-
-                existingAdress.StreetName = adress.StreetName;
-
-                existingAdress.City = adress.City;
-
-                existingAdress.PostalCode = adress.PostalCode;
+           
 
 
 
@@ -163,7 +149,8 @@ internal class AdressService
 
 
 
-                var updatedOrder = _adressRepository.Update(existingAdress);
+
+                var updatedOrder = _adressRepository.Update(x => x.Id == adressEntity.Id,adressEntity);
 
                 if (updatedOrder != null)
                 {
@@ -171,7 +158,7 @@ internal class AdressService
                 }
 
 
-            }
+            
         }
         catch (Exception ex) { Debug.WriteLine("ERROR  :: " + ex.Message); }
         return null!;

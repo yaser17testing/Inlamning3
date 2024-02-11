@@ -103,24 +103,14 @@ internal class RoleService
 
 
 
-    public RoleEntity updateRole(RoleEntity RoleName)
+    public RoleEntity updateRole(RoleEntity roleEntity)
     {
 
         try
         {
 
 
-            var existingRole = _roleRepository.GetOne(x => x.Id == RoleName.Id);
-
-
-
-            if (existingRole != null)
-            {
-
-
-
-
-                existingRole.RoleName = RoleName.RoleName;
+          
 
 
 
@@ -129,10 +119,7 @@ internal class RoleService
 
 
 
-
-
-
-                var updatedEntity = _roleRepository.Update(existingRole);
+                var updatedEntity = _roleRepository.Update(x => x.Id == roleEntity.Id,roleEntity);
 
                 if (updatedEntity != null)
                 {
@@ -140,7 +127,7 @@ internal class RoleService
                 }
 
 
-            }
+            
         }
         catch (Exception ex) { Debug.WriteLine("ERROR  :: " + ex.Message); }
         return null!;

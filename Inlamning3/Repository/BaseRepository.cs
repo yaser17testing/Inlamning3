@@ -49,16 +49,16 @@ public abstract class BaseRepository<Tentity> where Tentity : class
 
     }
 
-    public virtual Tentity GetOne(Expression<Func<Tentity, bool>> predicate)
+    public virtual Tentity GetOne(Expression<Func<Tentity, bool>> expression)
     {
 
         try
         {
 
-            var result = _context.Set<Tentity>().FirstOrDefault(predicate, null!);
+            var result = _context.Set<Tentity>().FirstOrDefault(expression);
 
 
-            return result;
+            return result!;
         }
         catch
 
@@ -72,28 +72,30 @@ public abstract class BaseRepository<Tentity> where Tentity : class
     }
 
 
-    public virtual Tentity Update(Tentity entity)
+    public virtual Tentity Update(Expression<Func<Tentity, bool>> expression, Tentity entity)
     {
 
         try
         {
 
-            var entityToUpdate = _context.Set<Tentity>().Find(entity);
+            var entityToUpdate = _context.Set<Tentity>().FirstOrDefault(expression);
 
-            if (entityToUpdate != null)
-            {
-                entityToUpdate = entity;
-                _context.Set<Tentity>().Update(entityToUpdate);
+          
+                
+                _context.Entry(entityToUpdate!).CurrentValues.SetValues(entity);
                 _context.SaveChanges();
-                return entityToUpdate;
 
-            }
+
+
+                return entityToUpdate!;
+
+            
 
 
         }
-        catch
+        catch(Exception ex)
 
-             (Exception ex)
+             
         { Debug.WriteLine("Error :: " + ex.Message); }
         return null!;
 
