@@ -77,7 +77,7 @@ internal class Cu_Ad_Ro_Or_Service(CustomerRepository customerRepository, Adress
                     OrderDetails = "in progress1",
                 };
 
-                // Sparar den nya ordern till databasen
+                
                 _orderRepository.Create(newOrder);
 
 

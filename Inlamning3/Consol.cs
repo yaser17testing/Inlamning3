@@ -31,7 +31,38 @@ internal class Consol
 
 
 
+    public void GetCustomer()
+    {
 
+
+
+        Console.WriteLine("Enter Customer ID");
+        int artikel =int.Parse(Console.ReadLine()!);
+
+        var resultGet = _cu_Ad_Ro_Or_Service.GetCustomerID(artikel!);
+
+        if (resultGet != null)
+        {
+
+
+
+
+
+            Console.WriteLine($"user found with Artikel: {resultGet.Id} - {resultGet.FirstName} - {resultGet.LastName} - {resultGet.Email} - {resultGet.Role.RoleName} - {resultGet.Address.StreetName} - {resultGet.Address.City} - {resultGet.Address.PostalCode} ");
+
+            Console.WriteLine("Orders:");
+            foreach (var order in resultGet.Orders)
+            {
+                Console.WriteLine($"- Order ID: {order.OrderID}");
+                Console.WriteLine($"  OrderDetails: {order.OrderDetails}");
+                Console.WriteLine();
+            }
+        }
+        else
+        {
+            Console.WriteLine($"No user found with Artikel: {artikel}");
+        }
+    }
 
 
 
@@ -123,7 +154,36 @@ internal class Consol
     public void CreateCustomer()
     {
 
-        var sucess = _cu_Ad_Ro_Or_Service.CreateCustomer(new CustomerDto { FirstName = Console.ReadLine()!, LastName = Console.ReadLine()!,RoleName = Console.ReadLine()!, Email = Console.ReadLine()!, StreetName = Console.ReadLine()!,  City = Console.ReadLine()!, PostalCode = Console.ReadLine()!, });
+        Console.WriteLine("FirstName");
+
+        var firstNam = Console.ReadLine();
+
+        Console.WriteLine("lastName");
+
+        var lastNam = Console.ReadLine();
+
+        Console.WriteLine("RoleName");
+
+        var roleName = Console.ReadLine();
+
+
+        Console.WriteLine("Email");
+
+        var mail = Console.ReadLine();
+
+        Console.WriteLine("Street");
+
+        var street = Console.ReadLine();
+
+        Console.WriteLine("City");
+
+        var city = Console.ReadLine();
+
+        Console.WriteLine("postal");
+
+        var postal = Console.ReadLine();
+
+        var sucess = _cu_Ad_Ro_Or_Service.CreateCustomer(new CustomerDto { FirstName = firstNam!, LastName = lastNam!,RoleName = roleName!, Email = mail!, StreetName = street!,  City = city!, PostalCode = postal!, });
 
        
 
@@ -140,8 +200,19 @@ internal class Consol
 
     public bool CreateProduct()
     {
-      
- var sucess = _categoryAndProductService.CreateProduct(new ProductDto { Title = Console.ReadLine()!, Price = Decimal.Parse(Console.ReadLine()!), Description = Console.ReadLine()!, CategoryName = Console.ReadLine()! });
+
+
+
+        Console.WriteLine("Creating new Product. Enter Title,");
+        var title = Console.ReadLine();
+        Console.WriteLine("Enter price");
+        var price = decimal.Parse(Console.ReadLine()!);
+        Console.WriteLine("Enter Description");
+        var description = Console.ReadLine();
+        Console.WriteLine("Enter Category");
+        var category = Console.ReadLine();
+
+        var sucess = _categoryAndProductService.CreateProduct(new ProductDto { Title = title!, Price = price, Description = description!, CategoryName = category! });
 
 
         if (sucess)
@@ -158,6 +229,95 @@ internal class Consol
     }
 
 
+
+    public void GetAllCustomers()
+    {
+        Console.Clear();
+        var result = _cu_Ad_Ro_Or_Service.GetAllCustomer();
+
+        foreach (var item in result)
+        {
+
+
+            Console.WriteLine($" {item.Id} - {item.FirstName} - {item.LastName} - {item.Email} - {item.Role.RoleName} - {item.Address.StreetName} - {item.Address.City} - {item.Address.PostalCode} ");
+
+            Console.WriteLine("Orders:");
+            foreach (var order in item.Orders)
+            {
+                Console.WriteLine($"- Order ID: {order.OrderID}");
+                Console.WriteLine($"  OrderDetails: {order.OrderDetails}");
+                Console.WriteLine();
+            }
+
+        }
+
+    }
+
+
+
+        public void GetAllProducts()
+        {
+            Console.Clear();
+            var result = _categoryAndProductService.GetAll();
+
+            foreach (var item in result)
+            {
+
+
+                Console.WriteLine($" {item.ArtikelID} - {item.Title} - {item.Description} - {item.Price} - {item.Category.CategoryName} ");
+
+
+
+        }
+
+
+
+
+    }
+
+
+
+    public void DeleteProduct()
+    {
+
+        Console.WriteLine("Enter ArtikelID to delete");
+
+
+
+        var sucess = _categoryAndProductService.DeleteProduct(new ProductDto { ArtikelID = int.Parse( Console.ReadLine()!) });
+
+
+        if (sucess)
+        {
+            Console.WriteLine("Succed");
+
+
+        }
+
+
+    }
+
+
+
+    public void DeleteCustomer()
+    {
+
+        Console.WriteLine("Enter CustomerID to delete");
+
+        var customId = int.Parse( Console.ReadLine()!);
+
+        var sucess = _cu_Ad_Ro_Or_Service.DeleteCustomerById(customId);
+
+
+        if (sucess)
+        {
+            Console.WriteLine("Succed");
+
+
+        }
+
+
+    }
 
 
 

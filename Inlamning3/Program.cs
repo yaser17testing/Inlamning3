@@ -47,7 +47,7 @@ public class Program
 
         var productService = builder.Services.GetRequiredService<Consol>();
 
-        productService.CreateCustomer();
+        productService.DeleteCustomer();
 
 
 
